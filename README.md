@@ -1,18 +1,37 @@
-## Getting Started
+# Java GUI Application
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+## 📌 Description  
+Java Swing application with menus, dialogs, file handling, and dynamic background animation.  
+The project uses **event listeners** and **threads** to demonstrate interactive GUI programming.
 
-## Folder Structure
+---
 
-The workspace contains two folders by default, where:
+## ⚙️ Methodology  
+We followed the **Scrum framework**, splitting the work into sprints for GUI, file operations, configurations, and help dialogs.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+---
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+## 🎨 Features  
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+### Main Window  
+- `JFrame` with title, icon, status bar, and menu bar.  
 
-## Dependency Management
+### Menus  
+- **File**: Open (with `JFileChooser`), Close, Exit.  
+- **Configuration**: Change patterns, colors, and speed of animated background (using threads).  
+- **Help**: Help dialog (`JDialog` + `JScrollPane`) and About section.  
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+---
+
+## 🖥️ Technical Details  
+- **Language**: Java  
+- **Toolkit**: Swing (`JFrame`, `JMenu`, `JPanel`, `JFileChooser`, `JDialog`)  
+- **Threads**: Background animation  
+- **Listeners**: User actions (menus, buttons)  
+
+---
+
+## 📊 Deliverables  
+- Application with menus and background animation  
+- UML class diagram  
+- Report + Presentation  
