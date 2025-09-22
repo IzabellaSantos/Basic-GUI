@@ -1,20 +1,29 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Screen extends JFrame {
 
+    private JTextArea textArea;
+    private JLabel statusLabel;
+    
     public Screen() {
         setTitle("Basic GUI");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600); 
 
         setJMenuBar(menuPanel());
+        add(createMainPanel(), BorderLayout.CENTER);
         add(statusPanel(), BorderLayout.SOUTH);
+
         setVisible(true);
     }
 
     private JMenuBar menuPanel() {
-        JMenuBar menuBar = new JMenuBar(); // Using JMenuBar
+        JMenuBar menuBar = new JMenuBar();
 
         JMenu menuFiles = new JMenu("Files");
         JMenu menuSettings = new JMenu("Settings");
@@ -24,29 +33,60 @@ public class Screen extends JFrame {
         menuBar.add(menuSettings);
         menuBar.add(menuHelp);
         
-        JMenuItem newItem = new JMenuItem("New file"); // Using JMenuItem
         JMenuItem openItem = new JMenuItem("Open file");
+        JMenuItem closeItem = new JMenuItem("Close file");
         JMenuItem exitItem = new JMenuItem("Exit");
         
-        menuFiles.add(newItem);
         menuFiles.add(openItem);
+        menuFiles.add(closeItem);
         menuFiles.addSeparator();
         menuFiles.add(exitItem);
          
-        exitItem.addActionListener(e -> { // Using Listeners
+        exitItem.addActionListener(_ -> {
             System.exit(0);
+        });
+        
+        openItem.addActionListener(_ -> openFile());
+        
+        
+        closeItem.addActionListener(_ -> {
+            textArea.setText("");
+            statusLabel.setText("Status: File closed.");
         });
 
         return menuBar;
     }
+    
+    private JPanel createMainPanel() {
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        textArea = new JTextArea();
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        return mainPanel;
+    }
 
     private JPanel statusPanel() {
-        JPanel statusPanel = new JPanel(); // Using JPanel
+        JPanel statusPanel = new JPanel();
         statusPanel.setBorder(BorderFactory.createEtchedBorder());
-        JLabel statusLabel = new JLabel("Status: Ready");
+        statusLabel = new JLabel("Status: Ready");
         statusPanel.add(statusLabel);
-
         return statusPanel;
+    }
+    
+    private void openFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+        
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+                textArea.read(reader, null);
+                statusLabel.setText("Status: " + selectedFile.getName() + " opened successfully.");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error reading file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                statusLabel.setText("Status: Error opening file.");
+            }
+        }
     }
     
     public static void main(String[] args) {
