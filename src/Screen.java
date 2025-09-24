@@ -42,14 +42,13 @@ public class Screen extends JFrame {
         menuFiles.addSeparator();
         menuFiles.add(exitItem);
          
-        exitItem.addActionListener(_ -> {
+        exitItem.addActionListener(e -> {
             System.exit(0);
         });
         
-        openItem.addActionListener(_ -> openFile());
+        openItem.addActionListener(e -> openFile());
         
-        
-        closeItem.addActionListener(_ -> {
+        closeItem.addActionListener(e -> {
             textArea.setText("");
             statusLabel.setText("Status: File closed.");
         });
@@ -87,11 +86,5 @@ public class Screen extends JFrame {
                 statusLabel.setText("Status: Error opening file.");
             }
         }
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new Screen();
-        });
     }
 }
