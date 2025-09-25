@@ -10,11 +10,14 @@ public class Screen extends JFrame {
 
     private JTextArea textArea;
     private JLabel statusLabel;
+    private AnimationController animationController;
     
     public Screen() {
         setTitle("Basic GUI");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600); 
+        setSize(800, 600);
+
+        animationController = new AnimationController();
 
         setJMenuBar(menuPanel());
         add(createMainPanel(), BorderLayout.CENTER);
@@ -68,7 +71,21 @@ public class Screen extends JFrame {
         helpItem.addActionListener(e -> help.showHelp());
         aboutItem.addActionListener(e -> help.showAbout());
 
+        JMenuItem defaultsItem = new JMenuItem("Defaults");
+        JMenuItem colorsItem = new JMenuItem("Colors");
+        JMenuItem speedItem = new JMenuItem("Speed");
+
+        menuSettings.add(defaultsItem);
+        menuSettings.add(colorsItem);
+        menuSettings.add(speedItem);
+
+
+        SettingsMenu settingsMenu = new SettingsMenu(this, getContentPane(), animationController);
+        defaultsItem.addActionListener(e -> settingsMenu.setDefaults());
+        colorsItem.addActionListener(e -> settingsMenu.changeColors());
+        speedItem.addActionListener(e -> settingsMenu.adjustSpeed());
         return menuBar;
+
     }
     
     private JPanel createMainPanel() {
@@ -90,6 +107,10 @@ public class Screen extends JFrame {
     private void openFile() {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(this);
+        JMenuItem saveItem = new JMenuItem("Save file");
+        menuFiles.add(saveItem);
+        FileMenu fileMenu = new FileMenu(this, textArea, statusLabel);
+        saveItem.addActionListener(e -> fileMenu.saveFile());
         
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();

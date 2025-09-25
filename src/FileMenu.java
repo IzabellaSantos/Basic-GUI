@@ -17,6 +17,7 @@ public class FileMenu {
         this.parentFrame = parentFrame;
         this.textArea = textArea;
         this.statusLabel = statusLabel;
+        this.currentFile = null;
     }
 
     public void openFile() {
