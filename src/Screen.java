@@ -1,4 +1,5 @@
 package def;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
@@ -10,24 +11,51 @@ public class Screen extends JFrame {
 
     private JTextArea textArea;
     private JLabel statusLabel;
-    private AnimationController animationController;
+    private BackgroundPanel backgroundPanel;
+    private FileMenu fileMenu;
+    private SettingsMenu settingsMenu;
     
     public Screen() {
         setTitle("Basic GUI");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
+        setLocationRelativeTo(null);
+        
+        setLayout(new BorderLayout());
 
-        animationController = new AnimationController();
+        backgroundPanel = new BackgroundPanel();
+        backgroundPanel.setLayout(new BorderLayout());
 
-        setJMenuBar(menuPanel());
-        add(createMainPanel(), BorderLayout.CENTER);
-        add(statusPanel(), BorderLayout.SOUTH);
+        createComponents();
+        
+        setJMenuBar(createMenuBar());
+        add(backgroundPanel, BorderLayout.CENTER);
+        add(createStatusPanel(), BorderLayout.SOUTH);
 
         setVisible(true);
+        startBackgroundAnimation();
     }
 
-    private JMenuBar menuPanel() {
-    	//Main Menu
+    private void createComponents() {
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setOpaque(false);
+        
+        textArea = new JTextArea();
+        textArea.setOpaque(false);
+        textArea.setForeground(Color.WHITE);
+        textArea.setCaretColor(Color.WHITE);
+        textArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        backgroundPanel.add(mainPanel, BorderLayout.CENTER);
+    }
+
+    private JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu menuFiles = new JMenu("Files");
@@ -38,7 +66,7 @@ public class Screen extends JFrame {
         menuBar.add(menuSettings);
         menuBar.add(menuHelp);
         
-        //File Menu
+        // File Menu
         JMenuItem openItem = new JMenuItem("Open file");
         JMenuItem closeItem = new JMenuItem("Close file");
         JMenuItem exitItem = new JMenuItem("Exit");
@@ -48,18 +76,13 @@ public class Screen extends JFrame {
         menuFiles.addSeparator();
         menuFiles.add(exitItem);
          
-        exitItem.addActionListener(e -> {
-            System.exit(0);
-        });
+        fileMenu = new FileMenu(this, textArea, statusLabel);
         
-        openItem.addActionListener(e -> openFile());
+        exitItem.addActionListener(e -> System.exit(0));
+        openItem.addActionListener(e -> fileMenu.openFile());
+        closeItem.addActionListener(e -> fileMenu.closeFile());
         
-        closeItem.addActionListener(e -> {
-            textArea.setText("");
-            statusLabel.setText("Status: File closed.");
-        });
-        
-        //Help Menu
+        // Help Menu
         JMenuItem helpItem = new JMenuItem("Help");
         JMenuItem aboutItem = new JMenuItem("About");
         
@@ -67,7 +90,6 @@ public class Screen extends JFrame {
         menuHelp.add(aboutItem);
         
         Help help = new Help(this, textArea, statusLabel);
-
         helpItem.addActionListener(e -> help.showHelp());
         aboutItem.addActionListener(e -> help.showAbout());
 
@@ -79,48 +101,36 @@ public class Screen extends JFrame {
         menuSettings.add(colorsItem);
         menuSettings.add(speedItem);
 
-
-        SettingsMenu settingsMenu = new SettingsMenu(this, getContentPane(), animationController);
+        settingsMenu = new SettingsMenu(this, backgroundPanel);
+        
         defaultsItem.addActionListener(e -> settingsMenu.setDefaults());
         colorsItem.addActionListener(e -> settingsMenu.changeColors());
         speedItem.addActionListener(e -> settingsMenu.adjustSpeed());
+        
         return menuBar;
-
-    }
-    
-    private JPanel createMainPanel() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        textArea = new JTextArea();
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-        return mainPanel;
     }
 
-    private JPanel statusPanel() {
+    private JPanel createStatusPanel() {
         JPanel statusPanel = new JPanel();
         statusPanel.setBorder(BorderFactory.createEtchedBorder());
+        statusPanel.setOpaque(true);
         statusLabel = new JLabel("Status: Ready");
         statusPanel.add(statusLabel);
         return statusPanel;
     }
-    
-    private void openFile() {
-        JFileChooser fileChooser = new JFileChooser();
-        int result = fileChooser.showOpenDialog(this);
-        JMenuItem saveItem = new JMenuItem("Save file");
-        menuFiles.add(saveItem);
-        FileMenu fileMenu = new FileMenu(this, textArea, statusLabel);
-        saveItem.addActionListener(e -> fileMenu.saveFile());
-        
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
-                textArea.read(reader, null);
-                statusLabel.setText("Status: " + selectedFile.getName() + " opened successfully.");
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error reading file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                statusLabel.setText("Status: Error opening file.");
-            }
-        }
+
+    private void startBackgroundAnimation() {
+        Timer timer = new Timer(500, e -> {
+            backgroundPanel.startAnimation();
+            System.out.println("Background animation started!");
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new Screen();
+        });
     }
 }

@@ -8,12 +8,10 @@ import java.awt.event.ActionListener;
 public class SettingsMenu {
 
     private JFrame parentFrame;
-    private Container contentPane;
     private AnimationController animationController;
 
-    public SettingsMenu(JFrame parentFrame, Container contentPane, AnimationController animationController) {
+    public SettingsMenu(JFrame parentFrame, AnimationController animationController) {
         this.parentFrame = parentFrame;
-        this.contentPane = contentPane;
         this.animationController = animationController;
     }
 
@@ -39,23 +37,21 @@ public class SettingsMenu {
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         ButtonGroup patternGroup = new ButtonGroup();
-        JRadioButton circlesPattern = new JRadioButton("Moving Circles", true);
-        JRadioButton squaresPattern = new JRadioButton("Floating Squares");
-        JRadioButton linesPattern = new JRadioButton("Dynamic Lines");
-        JRadioButton starsPattern = new JRadioButton("Twinkling Stars");
+        
+        int currentType = animationController.getShapeType();
+        JRadioButton circlesPattern = new JRadioButton("Moving Circles", currentType == 0);
+        JRadioButton squaresPattern = new JRadioButton("Floating Squares", currentType == 1);
+        JRadioButton linesPattern = new JRadioButton("Dynamic Lines", currentType == 2);
 
         patternGroup.add(circlesPattern);
         patternGroup.add(squaresPattern);
         patternGroup.add(linesPattern);
-        patternGroup.add(starsPattern);
 
         contentPanel.add(circlesPattern);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         contentPanel.add(squaresPattern);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         contentPanel.add(linesPattern);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        contentPanel.add(starsPattern);
 
         // Button Panel
         JPanel buttonPanel = new JPanel();
@@ -64,13 +60,11 @@ public class SettingsMenu {
 
         applyButton.addActionListener(e -> {
             if (circlesPattern.isSelected()) {
-                animationController.setPattern("circles");
+                animationController.setShapeType(0); // circles
             } else if (squaresPattern.isSelected()) {
-                animationController.setPattern("squares");
+                animationController.setShapeType(1); // squares
             } else if (linesPattern.isSelected()) {
-                animationController.setPattern("lines");
-            } else if (starsPattern.isSelected()) {
-                animationController.setPattern("stars");
+                animationController.setShapeType(2); // lines
             }
             defaultsDialog.dispose();
         });
@@ -126,7 +120,8 @@ public class SettingsMenu {
 
         gbc.gridx = 1;
         JButton secondaryColorButton = new JButton("    ");
-        secondaryColorButton.setBackground(animationController.getSecondaryColor());
+        secondaryColorButton.setBackground(animationController.getSecondaryColor() != null ? 
+                                         animationController.getSecondaryColor() : Color.GRAY);
         secondaryColorButton.setPreferredSize(new Dimension(50, 30));
         contentPanel.add(secondaryColorButton, gbc);
 
@@ -172,7 +167,8 @@ public class SettingsMenu {
 
         secondaryColorButton.addActionListener(e -> {
             Color newColor = JColorChooser.showDialog(colorsDialog, "Choose Secondary Color",
-                    animationController.getSecondaryColor());
+                    animationController.getSecondaryColor() != null ? 
+                    animationController.getSecondaryColor() : Color.GRAY);
             if (newColor != null) {
                 secondaryColorButton.setBackground(newColor);
             }
@@ -188,27 +184,27 @@ public class SettingsMenu {
 
         // Preset Action Listeners
         bluePreset.addActionListener(e -> {
-            primaryColorButton.setBackground(new Color(30, 144, 255));
-            secondaryColorButton.setBackground(new Color(0, 191, 255));
-            backgroundColorButton.setBackground(new Color(25, 25, 112));
+            primaryColorButton.setBackground(new Color(30, 144, 255));    // DodgerBlue
+            secondaryColorButton.setBackground(new Color(0, 191, 255));   // DeepSkyBlue
+            backgroundColorButton.setBackground(new Color(25, 25, 112));  // MidnightBlue
         });
 
         redPreset.addActionListener(e -> {
-            primaryColorButton.setBackground(new Color(255, 99, 71));
-            secondaryColorButton.setBackground(new Color(255, 140, 0));
-            backgroundColorButton.setBackground(new Color(139, 0, 0));
+            primaryColorButton.setBackground(new Color(255, 99, 71));     // Tomato
+            secondaryColorButton.setBackground(new Color(255, 140, 0));   // DarkOrange
+            backgroundColorButton.setBackground(new Color(139, 0, 0));    // DarkRed
         });
 
         greenPreset.addActionListener(e -> {
-            primaryColorButton.setBackground(new Color(34, 139, 34));
-            secondaryColorButton.setBackground(new Color(144, 238, 144));
-            backgroundColorButton.setBackground(new Color(0, 100, 0));
+            primaryColorButton.setBackground(new Color(34, 139, 34));     // ForestGreen
+            secondaryColorButton.setBackground(new Color(144, 238, 144)); // LightGreen
+            backgroundColorButton.setBackground(new Color(0, 100, 0));    // DarkGreen
         });
 
         purplePreset.addActionListener(e -> {
-            primaryColorButton.setBackground(new Color(138, 43, 226));
-            secondaryColorButton.setBackground(new Color(186, 85, 211));
-            backgroundColorButton.setBackground(new Color(75, 0, 130));
+            primaryColorButton.setBackground(new Color(138, 43, 226));    // BlueViolet
+            secondaryColorButton.setBackground(new Color(186, 85, 211));  // MediumOrchid
+            backgroundColorButton.setBackground(new Color(75, 0, 130));   // Indigo
         });
 
         // Button Panel
@@ -259,13 +255,16 @@ public class SettingsMenu {
         JLabel speedLabel = new JLabel("Speed Level:");
         speedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JSlider speedSlider = new JSlider(1, 10, animationController.getSpeed());
+        int currentSpeed = animationController.getSpeed();
+        int sliderValue = Math.max(1, Math.min(10, 11 - (currentSpeed / 10)));
+        
+        JSlider speedSlider = new JSlider(1, 10, sliderValue);
         speedSlider.setMajorTickSpacing(1);
         speedSlider.setPaintTicks(true);
         speedSlider.setPaintLabels(true);
         speedSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel currentSpeedLabel = new JLabel("Current Speed: " + animationController.getSpeed());
+        JLabel currentSpeedLabel = new JLabel("Current Speed: " + sliderValue);
         currentSpeedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         speedSlider.addChangeListener(e -> {
@@ -286,13 +285,13 @@ public class SettingsMenu {
         JButton resumeButton = new JButton("Resume Animation");
 
         pauseButton.addActionListener(e -> {
-            animationController.pauseAnimation();
+            animationController.stopAnimation();
             pauseButton.setEnabled(false);
             resumeButton.setEnabled(true);
         });
 
         resumeButton.addActionListener(e -> {
-            animationController.resumeAnimation();
+            animationController.startAnimation();
             resumeButton.setEnabled(false);
             pauseButton.setEnabled(true);
         });
@@ -310,7 +309,8 @@ public class SettingsMenu {
         JButton cancelButton = new JButton("Cancel");
 
         applyButton.addActionListener(e -> {
-            animationController.setSpeed(speedSlider.getValue());
+            int newSpeed = 100 - (speedSlider.getValue() * 10);
+            animationController.setSpeed(newSpeed);
             speedDialog.dispose();
         });
 
