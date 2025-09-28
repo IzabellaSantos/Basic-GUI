@@ -2,14 +2,14 @@ package def;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class Screen extends JFrame {
 
-    private JTextArea textArea;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4705267793229623217L;
+	private JTextArea textArea;
     private JLabel statusLabel;
     private BackgroundPanel backgroundPanel;
     private FileMenu fileMenu;
@@ -76,6 +76,10 @@ public class Screen extends JFrame {
         menuFiles.addSeparator();
         menuFiles.add(exitItem);
          
+        if (statusLabel == null) {
+        	statusLabel = new JLabel("Loading...");
+		}
+        
         fileMenu = new FileMenu(this, textArea, statusLabel);
         
         exitItem.addActionListener(e -> System.exit(0));
@@ -89,7 +93,7 @@ public class Screen extends JFrame {
         menuHelp.add(helpItem);
         menuHelp.add(aboutItem);
         
-        Help help = new Help(this, textArea, statusLabel);
+        Help help = new Help(this);
         helpItem.addActionListener(e -> help.showHelp());
         aboutItem.addActionListener(e -> help.showAbout());
 

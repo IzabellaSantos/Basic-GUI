@@ -8,7 +8,11 @@ import java.util.Random;
 
 public class BackgroundPanel extends JPanel implements Runnable, AnimationController {
 
-    private Thread animationThread;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6260921200851725553L;
+	private Thread animationThread;
     private volatile boolean running = false;
 
     private Color backgroundColor = Color.BLACK;
