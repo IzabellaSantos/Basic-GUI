@@ -1,13 +1,16 @@
-package def;
 
 import javax.swing.*;
+
+import def.BackgroundPanel;
+import def.FileMenu;
+import def.Help;
+import def.SettingsMenu;
+
 import java.awt.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Screen extends JFrame {
-
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 4705267793229623217L;
 	private JTextArea textArea;
     private JLabel statusLabel;
@@ -118,8 +121,15 @@ public class Screen extends JFrame {
         JPanel statusPanel = new JPanel();
         statusPanel.setBorder(BorderFactory.createEtchedBorder());
         statusPanel.setOpaque(true);
-        statusLabel = new JLabel("Status: Ready");
+    
         statusPanel.add(statusLabel);
+        
+        Timer timer = new Timer(1000, e -> {
+            String horaAtual = LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm a"));
+            statusLabel.setText("Status: " + horaAtual);
+        });
+        timer.start();
+        
         return statusPanel;
     }
 
@@ -130,11 +140,5 @@ public class Screen extends JFrame {
         });
         timer.setRepeats(false);
         timer.start();
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new Screen();
-        });
     }
 }
