@@ -11,6 +11,11 @@ We followed the **Scrum framework**, splitting the work into sprints for GUI, fi
 
 ---
 
+## 👩‍💻 Compile
+- Run on terminal: `javac Main.java && java Main`
+
+---
+
 ## 🎨 Features  
 
 ### Main Window  
