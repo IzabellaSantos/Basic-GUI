@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 public class Screen extends JFrame {
 	private static final long serialVersionUID = 4705267793229623217L;
 	private JTextArea textArea;
-    private JLabel statusLabel;
+    private JLabel statusLabel, statusTime;
     private BackgroundPanel backgroundPanel;
     private FileMenu fileMenu;
     private SettingsMenu settingsMenu;
@@ -121,12 +121,16 @@ public class Screen extends JFrame {
         JPanel statusPanel = new JPanel();
         statusPanel.setBorder(BorderFactory.createEtchedBorder());
         statusPanel.setOpaque(true);
-    
+
+        statusTime = new JLabel("hh:mm:ss a");
+        statusPanel.add(statusTime);
+
+        statusLabel = new JLabel("Status: Ready");
         statusPanel.add(statusLabel);
         
         Timer timer = new Timer(1000, e -> {
             String horaAtual = LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm a"));
-            statusLabel.setText("Status: " + horaAtual);
+            statusTime.setText(horaAtual);
         });
         timer.start();
         
