@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 
 import def.BackgroundPanel;

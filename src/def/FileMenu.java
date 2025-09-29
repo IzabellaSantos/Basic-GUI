@@ -1,5 +1,6 @@
 package def;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter; 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -19,6 +20,10 @@ public class FileMenu {
 
     public void openFile() {
         JFileChooser fileChooser = new JFileChooser();
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
+        fileChooser.setFileFilter(filter);
+
         int result = fileChooser.showOpenDialog(parentFrame);
         
         if (result == JFileChooser.APPROVE_OPTION) {
