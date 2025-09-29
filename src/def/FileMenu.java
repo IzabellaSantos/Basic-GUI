@@ -1,10 +1,8 @@
 package def;
 import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileMenu {
@@ -31,22 +29,6 @@ public class FileMenu {
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(parentFrame, "Error reading file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 statusLabel.setText("Status: Error opening file.");
-            }
-        }
-    }
-    
-    public void saveFile() {
-        JFileChooser fileChooser = new JFileChooser();
-        int result = fileChooser.showSaveDialog(parentFrame);
-        
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = fileChooser.getSelectedFile();
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
-                textArea.write(writer);
-                statusLabel.setText("Status: File saved successfully.");
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(parentFrame, "Error saving file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                statusLabel.setText("Status: Error saving file.");
             }
         }
     }

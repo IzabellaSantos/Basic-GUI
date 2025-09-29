@@ -48,6 +48,7 @@ public class Screen extends JFrame {
         textArea.setForeground(Color.WHITE);
         textArea.setCaretColor(Color.WHITE);
         textArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        textArea.setEditable(false);
         
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setOpaque(false);
